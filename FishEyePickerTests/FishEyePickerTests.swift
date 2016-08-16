@@ -1,11 +1,3 @@
-//
-//  FishEyePickerTests.swift
-//  FishEyePickerTests
-//
-//  Created by Saugat Gautam on 8/11/16.
-//  Copyright © 2016 Leapfrog. All rights reserved.
-//
-
 import XCTest
 @testable import FishEyePicker
 

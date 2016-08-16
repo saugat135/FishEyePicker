@@ -1,11 +1,3 @@
-//
-//  ViewController.swift
-//  FishEyePicker
-//
-//  Created by Saugat Gautam on 8/11/16.
-//  Copyright © 2016 Leapfrog. All rights reserved.
-//
-
 import UIKit
 
 class ViewController: UIViewController {
