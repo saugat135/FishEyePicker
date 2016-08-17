@@ -1,11 +1,15 @@
 import UIKit
 
-class ViewController: UIViewController {
+protocol DatePickerVCDelegate: class {
+  func didSelectDate(date: NSDate)
+}
+
+class DatePickerVC: UIViewController {
+    
+  weak var delegate: DatePickerVCDelegate?
   
-  @IBOutlet var fisheyePickerView: AKPickerView!
   var datePicker: PickerView!
   
-  var pickerTitles = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Satur"]
   var dates = [Date]()
 
   override func viewDidLoad() {
@@ -14,8 +18,7 @@ class ViewController: UIViewController {
     
     guard let datePicker = NSBundle.mainBundle().loadNibNamed("PickerView", owner: self, options: nil).last as? PickerView else { return }
     self.datePicker = datePicker
-    let rect = CGRect(x: 0, y: 60, width: view.frame.width, height: 70)
-    datePicker.frame = rect
+    datePicker.frame = view.bounds
     datePicker.delegate = self
     datePicker.datasource = self
     datePicker.indicatorBarColor = UIColor.redColor()
@@ -26,6 +29,7 @@ class ViewController: UIViewController {
     datePicker.pickerViewStyle = .StyleFlat
     datePicker.textColor = UIColor.whiteColor()
     datePicker.highlightedTextColor = UIColor.whiteColor()
+    datePicker.disabledTextColor = UIColor.grayColor()
     
     datePicker.backgroundColor = UIColor.blackColor()
     
@@ -47,7 +51,6 @@ class ViewController: UIViewController {
     
     guard let index = currentDateIndex else { return }
     datePicker.selectItem(UInt(index), animated: false)
-
     
   }
 
@@ -58,22 +61,25 @@ class ViewController: UIViewController {
   
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-    let rect = CGRect(x: 0, y: 60, width: view.frame.width, height: 70)
-    datePicker.frame = rect
-    
+    datePicker.frame = view.bounds
   }
 
 }
 
-extension ViewController: PickerViewDelegate {
+extension DatePickerVC: PickerViewDelegate {
   
   func pickerView(pickerView: AKPickerView!, marginForItem item: Int) -> CGSize {
     return CGSize(width: 15, height: 20)
   }
   
+  func pickerView(pickerView: AKPickerView!, didSelectItem item: Int) {
+    let date = dates[item]
+    delegate?.didSelectDate(date.nsDate)
+  }
+  
 }
 
-extension ViewController: PickerViewDatasource {
+extension DatePickerVC: PickerViewDatasource {
   func numberOfItemsInPickerView(pickerView: AKPickerView) -> UInt {
     return UInt(dates.count)
   }
@@ -87,6 +93,11 @@ extension ViewController: PickerViewDatasource {
     formatter.dateFormat = "MMM"
     let monthString = formatter.stringFromDate(dates[item].nsDate).lowercaseString
     return "\(monthString) \(dates[item].day)"
+  }
+  
+  func upperThresholdItemForDisablingInteractionInPickerView(pickerView: AKPickerView!) -> Int {
+    let item = dates.indexOf(Date(nsDate: NSDate()))
+    return item!
   }
 }
 

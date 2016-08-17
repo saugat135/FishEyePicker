@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CD26F1131D5C6D7900B9408F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD26F1121D5C6D7900B9408F /* AppDelegate.swift */; };
-		CD26F1151D5C6D7900B9408F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD26F1141D5C6D7900B9408F /* ViewController.swift */; };
+		CD26F1151D5C6D7900B9408F /* DatePickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD26F1141D5C6D7900B9408F /* DatePickerVC.swift */; };
 		CD26F1181D5C6D7900B9408F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CD26F1161D5C6D7900B9408F /* Main.storyboard */; };
 		CD26F11A1D5C6D7900B9408F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CD26F1191D5C6D7900B9408F /* Assets.xcassets */; };
 		CD26F11D1D5C6D7900B9408F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CD26F11B1D5C6D7900B9408F /* LaunchScreen.storyboard */; };
@@ -34,7 +34,7 @@
 /* Begin PBXFileReference section */
 		CD26F10F1D5C6D7900B9408F /* FishEyePicker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FishEyePicker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CD26F1121D5C6D7900B9408F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		CD26F1141D5C6D7900B9408F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		CD26F1141D5C6D7900B9408F /* DatePickerVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerVC.swift; sourceTree = "<group>"; };
 		CD26F1171D5C6D7900B9408F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		CD26F1191D5C6D7900B9408F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CD26F11C1D5C6D7900B9408F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -94,7 +94,7 @@
 				CDEB6C351D63177E00C70FD8 /* DateUtils */,
 				CDEB6C371D63177E00C70FD8 /* SGPickerView */,
 				CD26F1121D5C6D7900B9408F /* AppDelegate.swift */,
-				CD26F1141D5C6D7900B9408F /* ViewController.swift */,
+				CD26F1141D5C6D7900B9408F /* DatePickerVC.swift */,
 				CD26F1161D5C6D7900B9408F /* Main.storyboard */,
 				CD26F1191D5C6D7900B9408F /* Assets.xcassets */,
 				CD26F11B1D5C6D7900B9408F /* LaunchScreen.storyboard */,
@@ -269,7 +269,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD26F1151D5C6D7900B9408F /* ViewController.swift in Sources */,
+				CD26F1151D5C6D7900B9408F /* DatePickerVC.swift in Sources */,
 				CDEB6C421D63177E00C70FD8 /* DateManager.swift in Sources */,
 				CDEB6C461D63177E00C70FD8 /* PickerView.swift in Sources */,
 				CDEB6C451D63177E00C70FD8 /* AKPickerView.m in Sources */,
@@ -353,7 +353,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = iphoneos;
@@ -393,7 +393,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";

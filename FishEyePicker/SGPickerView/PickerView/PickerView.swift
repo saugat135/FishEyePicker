@@ -4,6 +4,8 @@ import UIKit
   optional func pickerView(pickerView: AKPickerView!, didSelectItem item: Int)
   optional func pickerView(pickerView: AKPickerView!, marginForItem item: Int) -> CGSize
   optional func pickerView(pickerView: AKPickerView!, configureLabel label: UILabel!, forItem item: Int)
+  optional func pickerView(pickerView: AKPickerView!, configureSubTitleLabel label: UILabel!, forItem item: Int)
+  optional func pickerView(pickerView: AKPickerView!, didEndScrollingAtItem item: Int)
 }
 
 @objc protocol PickerViewDatasource: class {
@@ -11,6 +13,8 @@ import UIKit
   optional func pickerView(pickerView: AKPickerView!, titleForItem item: Int) -> String
   optional func pickerView(pickerView: AKPickerView!, subTitleForItem item: Int) -> String!
   optional func pickerView(pickerView: AKPickerView!, imageForItem item: Int) -> UIImage!
+  optional func lowerThresholdItemForDisablingInteractionInPickerView(pickerView: AKPickerView!) -> Int
+  optional func upperThresholdItemForDisablingInteractionInPickerView(pickerView: AKPickerView!) -> Int
 }
 
 class PickerView: UIView {
@@ -29,6 +33,7 @@ class PickerView: UIView {
   var highLightedFont: UIFont!
   var textColor: UIColor!
   var highlightedTextColor: UIColor!
+  var disabledTextColor: UIColor!
   var interitemSpacing: CGFloat!
   var fisheyeFactor: CGFloat! // 0...1
   var maskDisabled: Bool!
@@ -111,6 +116,9 @@ class PickerView: UIView {
     if let highlightedTextColor = highlightedTextColor {
       picker.highlightedTextColor = highlightedTextColor
     }
+    if let disabledTextColor = disabledTextColor {
+      picker.disabledTextColor = disabledTextColor
+    }
     if let interitemSpacing = interitemSpacing {
       picker.interitemSpacing = interitemSpacing
     }
@@ -151,6 +159,14 @@ extension PickerView: AKPickerViewDelegate {
     delegate?.pickerView?(pickerView, configureLabel: label, forItem: item)
   }
   
+  func pickerView(pickerView: AKPickerView!, configureSubTitleLabel label: UILabel!, forItem item: Int) {
+    delegate?.pickerView?(pickerView, configureSubTitleLabel: label, forItem: item)
+  }
+  
+  func pickerView(pickerView: AKPickerView!, didEndScrollingAtItem item: Int) {
+    delegate?.pickerView?(pickerView, didEndScrollingAtItem: item)
+  }
+  
 }
 
 extension PickerView: AKPickerViewDataSource {
@@ -173,6 +189,14 @@ extension PickerView: AKPickerViewDataSource {
   func pickerView(pickerView: AKPickerView!, imageForItem item: Int) -> UIImage! {
     guard let datasource = datasource else { return nil }
     return datasource.pickerView?(pickerView, imageForItem: item)
+  }
+  
+  func lowerThresholdItemForDisablingInteractionInPickerView(pickerView: AKPickerView!) -> NSNumber! {
+    return datasource?.lowerThresholdItemForDisablingInteractionInPickerView?(pickerView)
+  }
+  
+  func upperThresholdItemForDisablingInteractionInPickerView(pickerView: AKPickerView!) -> NSNumber! {
+    return datasource?.upperThresholdItemForDisablingInteractionInPickerView?(pickerView)
   }
   
 }

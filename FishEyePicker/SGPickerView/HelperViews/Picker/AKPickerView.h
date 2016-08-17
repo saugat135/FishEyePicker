@@ -22,6 +22,8 @@ typedef NS_ENUM(NSInteger, AKPickerViewStyle) {
 - (NSString *)pickerView:(AKPickerView *)pickerView titleForItem:(NSInteger)item;
 - (NSString *)pickerView:(AKPickerView *)pickerView subTitleForItem:(NSInteger)item;
 - (UIImage *)pickerView:(AKPickerView *)pickerView imageForItem:(NSInteger)item;
+- (NSNumber *)lowerThresholdItemForDisablingInteractionInPickerView:(AKPickerView *)pickerView;
+- (NSNumber *)upperThresholdItemForDisablingInteractionInPickerView:(AKPickerView *)pickerView;
 @end
 
 @protocol AKPickerViewDelegate <UIScrollViewDelegate>
@@ -29,6 +31,8 @@ typedef NS_ENUM(NSInteger, AKPickerViewStyle) {
 - (void)pickerView:(AKPickerView *)pickerView didSelectItem:(NSInteger)item;
 - (CGSize)pickerView:(AKPickerView *)pickerView marginForItem:(NSInteger)item;
 - (void)pickerView:(AKPickerView *)pickerView configureLabel:(UILabel * const)label forItem:(NSInteger)item;
+- (void)pickerView:(AKPickerView *)pickerView configureSubTitleLabel:(UILabel * const)label forItem:(NSInteger)item;
+- (void)pickerView:(AKPickerView *)pickerView didEndScrollingAtItem:(NSInteger)item;
 @end
 
 @interface AKPickerView : UIView
@@ -39,6 +43,7 @@ typedef NS_ENUM(NSInteger, AKPickerViewStyle) {
 @property (nonatomic, strong) UIFont *highlightedFont;
 @property (nonatomic, strong) UIColor *textColor;
 @property (nonatomic, strong) UIColor *highlightedTextColor;
+@property (nonatomic, strong) UIColor *disabledTextColor;
 @property (nonatomic, assign) CGFloat interitemSpacing;
 @property (nonatomic, assign) CGFloat fisheyeFactor; // 0...1; slight value recommended such as 0.0001
 @property (nonatomic, assign, getter=isMaskDisabled) BOOL maskDisabled;

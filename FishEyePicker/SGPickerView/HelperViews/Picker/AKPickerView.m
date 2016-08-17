@@ -253,7 +253,26 @@
 		case AKPickerViewStyleFlat: {
 			CGPoint center = [self convertPoint:self.collectionView.center toView:self.collectionView];
 			NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:center];
+      if ([self.delegate respondsToSelector:@selector(lowerThresholdItemForDisablingInteractionInPickerView:)]) {
+        NSNumber *lowerThreshold = [self.dataSource lowerThresholdItemForDisablingInteractionInPickerView:self];
+        if ((lowerThreshold) && indexPath.row < lowerThreshold.integerValue) {
+          [self selectItem:lowerThreshold.integerValue animated:true];
+          return;
+        }
+      }
+      
+      if ([self.delegate respondsToSelector:@selector(upperThresholdItemForDisablingInteractionInPickerView:)]) {
+        NSNumber *upperThreshold = [self.dataSource upperThresholdItemForDisablingInteractionInPickerView:self];
+        if ((upperThreshold) && indexPath.row > upperThreshold.integerValue) {
+          [self selectItem:upperThreshold.integerValue animated:true];
+          return;
+        }
+        
+      }
 			[self selectItem:indexPath.item animated:YES];
+      if ([self.delegate respondsToSelector:@selector(pickerView:didEndScrollingAtItem:)]) {
+        [self.delegate pickerView:self didEndScrollingAtItem:indexPath.item];
+      }
 			break;
 		}
 		case AKPickerViewStyle3D: {
@@ -263,6 +282,9 @@
 					AKCollectionViewCell *cell = (AKCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
 					if ([self offsetForItem:i] + cell.bounds.size.width / 2 > self.collectionView.contentOffset.x) {
 						[self selectItem:i animated:YES];
+            if ([self.delegate respondsToSelector:@selector(pickerView:didEndScrollingAtItem:)]) {
+              [self.delegate pickerView:self didEndScrollingAtItem:indexPath.item];
+            }
 						break;
 					}
 				}
@@ -289,27 +311,55 @@
 {
 	AKCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:NSStringFromClass([AKCollectionViewCell class])
 																		   forIndexPath:indexPath];
+  
 
 	if ([self.dataSource respondsToSelector:@selector(pickerView:titleForItem:)]) {
 		NSString *title = [self.dataSource pickerView:self titleForItem:indexPath.item];
     NSString *subTitle = [self.dataSource pickerView:self subTitleForItem:indexPath.item];
     
 		cell.label.text = title;
-		cell.label.textColor = self.textColor;
-		cell.label.highlightedTextColor = self.highlightedTextColor;
+    
+    UIColor *textColor = self.textColor;
+    UIColor *highlightedTextColor = self.highlightedTextColor;
+    UIFont *highlightedFont = self.highlightedFont;
+    
+    if ([self.dataSource respondsToSelector:@selector(lowerThresholdItemForDisablingInteractionInPickerView:)]) {
+      NSNumber *lowerThreshold = [self.dataSource lowerThresholdItemForDisablingInteractionInPickerView:self];
+      if ((lowerThreshold) && indexPath.row < lowerThreshold.integerValue) {
+        textColor = self.disabledTextColor;
+        highlightedTextColor = self.disabledTextColor;
+        highlightedFont = self.font;
+      }
+    }
+    
+    if ([self.dataSource respondsToSelector:@selector(upperThresholdItemForDisablingInteractionInPickerView:)]) {
+      NSNumber *upperThreshold = [self.dataSource upperThresholdItemForDisablingInteractionInPickerView:self];
+      if ((upperThreshold) && indexPath.row > upperThreshold.integerValue) {
+        textColor = self.disabledTextColor;
+        highlightedTextColor = self.disabledTextColor;
+        highlightedFont = self.font;
+      }
+    }
+    
+    
+		cell.label.textColor = textColor;
+		cell.label.highlightedTextColor = highlightedTextColor;
 		cell.label.font = self.font;
 		cell.font = self.font;
-		cell.highlightedFont = self.highlightedFont;
+		cell.highlightedFont = highlightedFont;
 		cell.label.bounds = (CGRect){CGPointZero, [self sizeForString:title]};
 		if ([self.delegate respondsToSelector:@selector(pickerView:marginForItem:)]) {
 			CGSize margin = [self.delegate pickerView:self marginForItem:indexPath.item];
 			cell.label.frame = CGRectInset(cell.label.frame, -margin.width, -margin.height/2 + 5);
 		}
+    if ([self.delegate respondsToSelector:@selector(pickerView:configureLabel:forItem:)]) {
+      [self.delegate pickerView:self configureLabel:cell.label forItem:indexPath.item];
+    }
     
     // Subtitles
     cell.subTitleLabel.text = subTitle;
-    cell.subTitleLabel.textColor = self.textColor;
-    cell.subTitleLabel.highlightedTextColor = self.highlightedTextColor;
+    cell.subTitleLabel.textColor = textColor;
+    cell.subTitleLabel.highlightedTextColor = highlightedTextColor;
     cell.subTitleLabel.font = [UIFont fontWithName:self.font.fontName size:self.font.pointSize];
     cell.subTitleLabel.bounds = (CGRect){CGPointZero, [self sizeForString:subTitle]};
     if ([self.delegate respondsToSelector:@selector(pickerView:marginForItem:)]) {
@@ -319,8 +369,8 @@
       CGSize margin = [self.delegate pickerView:self marginForItem:indexPath.item];
       cell.subTitleLabel.frame = CGRectInset(rect, -margin.width, -margin.height/2 - 5);
     }
-		if ([self.delegate respondsToSelector:@selector(pickerView:configureLabel:forItem:)]) {
-			[self.delegate pickerView:self configureLabel:cell.subTitleLabel forItem:indexPath.item];
+		if ([self.delegate respondsToSelector:@selector(pickerView:configureSubTitleLabel:forItem:)]) {
+			[self.delegate pickerView:self configureSubTitleLabel:cell.subTitleLabel forItem:indexPath.item];
 		}
 	} else if ([self.dataSource respondsToSelector:@selector(pickerView:imageForItem:)]) {
 		cell.imageView.image = [self.dataSource pickerView:self imageForItem:indexPath.item];
@@ -368,6 +418,22 @@
 	CGSize lastSize = [self collectionView:collectionView layout:collectionViewLayout sizeForItemAtIndexPath:lastIndexPath];
 	return UIEdgeInsetsMake(0, (collectionView.bounds.size.width - firstSize.width) / 2,
 							0, (collectionView.bounds.size.width - lastSize.width) / 2);
+}
+
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+  if ([self.dataSource respondsToSelector:@selector(lowerThresholdItemForDisablingInteractionInPickerView:)]) {
+    NSNumber *lowerThreshold = [self.dataSource lowerThresholdItemForDisablingInteractionInPickerView:self];
+    if ((lowerThreshold) && indexPath.row < lowerThreshold.integerValue) {
+      return NO;
+    }
+  }
+  if ([self.dataSource respondsToSelector:@selector(upperThresholdItemForDisablingInteractionInPickerView:)]) {
+    NSNumber *upperThreshold = [self.dataSource upperThresholdItemForDisablingInteractionInPickerView:self];
+    if ((upperThreshold) && indexPath.row > upperThreshold.integerValue) {
+      return NO;
+    }
+  }
+  return YES;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
